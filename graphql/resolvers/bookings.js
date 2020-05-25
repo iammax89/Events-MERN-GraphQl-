@@ -8,7 +8,7 @@ exports.queryBookings = async (args, req) => {
     throw new Error("Unauthenticated!");
   }
   try {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find({ user: req.userId });
     return bookings.map((booking) => transformedBooking(booking));
   } catch (error) {
     throw error;

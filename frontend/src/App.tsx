@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import "./App.scss";
 import AuthPage from "./Auth/pages/Auth";
-import EventPage from "./Events/pages/Evants";
+import EventPage from "./Events/pages/Events";
 import BookingPage from "./Bookings/pages/Bookings";
 import ResponsiveDrawer from "./common/Navigation/ResponsiveDrawer/ResponsiveDrawer";
-import AuthContext from "./context/auth";
+import AuthContext from "./context/context";
 function App(): JSX.Element {
   const [token, setToken] = useState("");
   const [userId, setUserId] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const loginHandler = (
     token: string,
@@ -23,6 +24,9 @@ function App(): JSX.Element {
     setToken("");
     setUserId("");
   };
+
+  const openModalHandler = () => setModalOpen(true);
+  const closeModalHandler = () => setModalOpen(false);
   return (
     <BrowserRouter>
       <AuthContext.Provider
@@ -31,6 +35,9 @@ function App(): JSX.Element {
           userId,
           login: loginHandler,
           logout: logoutHandler,
+          openModal: openModalHandler,
+          closeModal: closeModalHandler,
+          isModalOpen: modalOpen,
         }}
       >
         <ResponsiveDrawer>

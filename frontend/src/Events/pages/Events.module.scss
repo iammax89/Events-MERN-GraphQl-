@@ -1,0 +1,15 @@
+.eventsControl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #f50057;
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 30rem;
+  max-width: 80%;
+  border-radius: 4px;
+  font-family: "Montserrat";
+  button {
+    width: 50%;
+  }
+}

@@ -1,7 +1,7 @@
 import React, { FC, useState, ChangeEvent, FormEvent, useContext } from "react";
 import { FormControl, InputLabel, Input, Button } from "@material-ui/core";
 import myClasses from "./Auth.module.scss";
-import AuthContext from "../../context/auth";
+import AuthContext from "../../context/context";
 
 type AuthData = {
   userId: string;

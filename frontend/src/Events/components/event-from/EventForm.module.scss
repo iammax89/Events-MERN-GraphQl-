@@ -1,0 +1,16 @@
+.eventForm {
+  display: flex;
+  flex-direction: column;
+  width: 40vw;
+}
+.eventFormControl {
+  margin: 0.5rem 0.8rem !important;
+}
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.8rem;
+  button {
+    width: 48%;
+  }
+}

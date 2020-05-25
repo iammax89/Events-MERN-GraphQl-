@@ -5,4 +5,7 @@ export default createContext({
   userId: "",
   login: (token: string, userId: string, tokenExpiration: number) => {},
   logout: () => {},
+  openModal: () => {},
+  closeModal: () => {},
+  isModalOpen: false,
 });
