@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import "./App.scss";
 import AuthPage from "./Auth/pages/Auth";
@@ -6,25 +6,59 @@ import EventPage from "./Events/pages/Events";
 import BookingPage from "./Bookings/pages/Bookings";
 import ResponsiveDrawer from "./common/Navigation/ResponsiveDrawer/ResponsiveDrawer";
 import AuthContext from "./context/context";
+import moment, { Moment } from "moment";
+
+let logoutTimer: NodeJS.Timeout;
 function App(): JSX.Element {
   const [token, setToken] = useState("");
   const [userId, setUserId] = useState("");
+  const [tokenExpDate, setTokenExpDate] = useState<Moment>();
   const [modalOpen, setModalOpen] = useState(false);
 
-  const loginHandler = (
-    token: string,
-    userId: string,
-    tokenExpiration: number
-  ) => {
-    setToken(token);
-    setUserId(userId);
-  };
+  const loginHandler = useCallback(
+    (token: string, userId: string, tokenExpiration: Moment) => {
+      setToken(token);
+      setUserId(userId);
+      const tokenExpirationDate = tokenExpiration || moment().add(1, "hours");
+      setTokenExpDate(tokenExpirationDate);
+      localStorage.setItem(
+        "userData",
+        JSON.stringify({
+          userId,
+          token,
+          tokenExpiration: tokenExpirationDate,
+        })
+      );
+    },
+    []
+  );
 
-  const logoutHandler = () => {
+  useEffect(() => {
+    const userDataJSON = localStorage.getItem("userData");
+    if (userDataJSON) {
+      const userData: {
+        userId: string;
+        token: string;
+        tokenExpiration: Moment;
+      } = JSON.parse(userDataJSON);
+      if (userData.token) {
+        loginHandler(userData.token, userData.userId, userData.tokenExpiration);
+      }
+    }
+  }, [loginHandler]);
+
+  const logoutHandler = useCallback(() => {
     setToken("");
     setUserId("");
-  };
-
+  }, []);
+  useEffect(() => {
+    if (token && tokenExpDate) {
+      const remainingTime = moment(tokenExpDate).diff(moment(), "milliseconds");
+      logoutTimer = setTimeout(() => logoutHandler(), remainingTime);
+    } else {
+      clearTimeout(logoutTimer);
+    }
+  }, [token, logoutHandler, tokenExpDate]);
   const openModalHandler = () => setModalOpen(true);
   const closeModalHandler = () => setModalOpen(false);
   return (

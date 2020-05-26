@@ -2,6 +2,7 @@ import React, { FC, useState, ChangeEvent, FormEvent, useContext } from "react";
 import { FormControl, InputLabel, Input, Button } from "@material-ui/core";
 import myClasses from "./Auth.module.scss";
 import AuthContext from "../../context/context";
+import moment from "moment";
 
 type AuthData = {
   userId: string;
@@ -42,22 +43,30 @@ const AuthPage: FC = () => {
     event.preventDefault();
 
     const loginBody = {
-      query: `query {
-        login(email: "${emailState.value}", password: "${passwordState.value}") {
+      query: `query Login($email: String!, $password: String!) {
+        login(email: $email, password: $password) {
           userId
           token
           tokenExpiration
         }
       }`,
+      variables: {
+        email: emailState.value,
+        password: passwordState.value,
+      },
     };
     const createUserBody = {
-      query: `mutation {
-        createUser(userInput: {email: "${emailState.value}" password: "${passwordState.value}"}) {
+      query: `mutation CreateUser($email: String!, $password: String!) {
+        createUser(userInput: {email: $email, password: $password}) {
           _id
           email
         }
       }
       `,
+      variables: {
+        email: emailState.value,
+        password: passwordState.value,
+      },
     };
 
     fetch("http://localhost:5000/graphql", {
@@ -79,7 +88,7 @@ const AuthPage: FC = () => {
           return login(
             authData.token,
             authData.userId,
-            authData.tokenExpiration
+            moment().add(1, "hours")
           );
         }
         // const newUserData = data["data"].createUser;

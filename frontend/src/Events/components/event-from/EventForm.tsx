@@ -86,12 +86,16 @@ export const EventForm: FC<eventFormProps> = ({
       date: formState.date.value?.format(),
     };
     const requestBody = {
-      query: `mutation {
+      query: `mutation CreateEvent(
+        $title: String!,
+         $describtion: String!,
+          $date: String!,
+           $price: Float!) {
           createEvent(eventInput: {
-          title: "${eventData.title}"
-          describtion: "${eventData.describtion}"
-          date: "${eventData.date}"
-          price: ${eventData.price}}) {
+          title: $title
+          describtion: $describtion
+          date: $date
+          price: $price}) {
             _id
             title
             describtion
@@ -99,6 +103,12 @@ export const EventForm: FC<eventFormProps> = ({
             date
           }
         }`,
+      variables: {
+        title: eventData.title,
+        describtion: eventData.describtion,
+        date: eventData.date,
+        price: eventData.price,
+      },
     };
     fetch("http://localhost:5000/graphql", {
       method: "POST",

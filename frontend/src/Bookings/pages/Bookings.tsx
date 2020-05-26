@@ -2,8 +2,8 @@ import React, { FC, useContext, useState, useEffect, useCallback } from "react";
 import Context from "../../context/context";
 import { IBooking } from "../../models/booking";
 import { LinearProgress } from "@material-ui/core";
-import BookingsTable from "../components/bookings-table/BookingTable";
-
+import BoocingsContext from "../context/booking-context";
+import BookingTabs from "../components/bookings-tabs/BookingsTabs";
 const BookingPage: FC = () => {
   const { token } = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +18,7 @@ const BookingPage: FC = () => {
             _id
             title
             date
+            price
           }
           user {
             _id
@@ -58,7 +59,14 @@ const BookingPage: FC = () => {
   return isLoading ? (
     <LinearProgress />
   ) : (
-    <BookingsTable bookings={bookings} fetchBookings={fetchBookings} />
+    <BoocingsContext.Provider
+      value={{
+        bookings: bookings,
+        fetchBookings: fetchBookings,
+      }}
+    >
+      <BookingTabs></BookingTabs>
+    </BoocingsContext.Provider>
   );
 };
 export default BookingPage;

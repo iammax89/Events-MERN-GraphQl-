@@ -18,13 +18,16 @@ const EventDetails: FC<EventDetailsProps> = ({ describtion, id }) => {
     }
     setIsloading(true);
     const requestBody = {
-      query: `mutation {
-        bookEvent(eventId: "${id}") {
+      query: `mutation BookEvent($id: ID!){
+        bookEvent(eventId: $id) {
           _id
           createdAt
           updatedAt
         }
       }`,
+      variables: {
+        id,
+      },
     };
     fetch("http://localhost:5000/graphql", {
       method: "POST",
